@@ -267,6 +267,8 @@ class PlayerActivity : AppCompatActivity() {
             controls.visibility =
                 if (controls.visibility == View.VISIBLE) View.GONE else View.VISIBLE
         }
+        // Mode live bersih: panel kontrol otomatis sembunyi 3 detik setelah mulai
+        handler.postDelayed({ controls.visibility = View.GONE }, 3000)
 
         findViewById<Button>(R.id.btnPlayPause).setOnClickListener {
             player?.let { if (it.isPlaying) it.pause() else it.play() }

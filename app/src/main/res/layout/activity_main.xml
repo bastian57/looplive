@@ -72,6 +72,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="Teks ticker promo (mis: STOK TERBATAS - CHECKOUT SEKARANG)"
+            android:textColor="@color/text"
+            android:textColorHint="@color/muted"
             android:textSize="14sp" />
 
         <EditText
@@ -80,6 +82,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="Kartu harga (mis: Rp99rb) - kosongkan untuk sembunyikan"
+            android:textColor="@color/text"
+            android:textColorHint="@color/muted"
             android:textSize="14sp" />
 
         <EditText
@@ -88,6 +92,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="Link QR (opsional - kosongkan untuk sembunyikan)"
+            android:textColor="@color/text"
+            android:textColorHint="@color/muted"
             android:textSize="14sp" />
 
         <CheckBox

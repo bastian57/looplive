@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LoopLive"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/accent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Video loop player untuk TikTok LIVE via Bagikan Layar"
+            android:textColor="@color/muted"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Playlist Video"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text" />
+
+        <TextView
+            android:id="@+id/tvCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 video dalam playlist"
+            android:textColor="@color/muted"
+            android:textSize="12sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPlaylist"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/card" />
+
+        <Button
+            android:id="@+id/btnPick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="+ Tambah Video" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Overlay (tampil di atas video)"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text" />
+
+        <EditText
+            android:id="@+id/etTicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Teks ticker promo (mis: STOK TERBATAS - CHECKOUT SEKARANG)"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Kartu harga (mis: Rp99rb) - kosongkan untuk sembunyikan"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etQr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Link QR (opsional - kosongkan untuk sembunyikan)"
+            android:textSize="14sp" />
+
+        <CheckBox
+            android:id="@+id/cbClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Jam real-time"
+            android:textColor="@color/text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Mode Live"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text" />
+
+        <CheckBox
+            android:id="@+id/cbDnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Aktifkan Jangan Ganggu (DND) saat live"
+            android:textColor="@color/text" />
+
+        <CheckBox
+            android:id="@+id/cbMicLock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MicLock: kunci mic saat live (hanya audio video/musik)"
+            android:textColor="@color/text" />
+
+        <Button
+            android:id="@+id/btnLive"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/accent"
+            android:text="MODE LIVE"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnTikTok"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Buka TikTok LIVE" />
+
+        <Button
+            android:id="@+id/btnGuide"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Panduan &amp; Tes Audio" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center_horizontal"
+            android:text="LoopLive v1.0.0 - by DAFTECH"
+            android:textColor="@color/muted"
+            android:textSize="11sp" />
+
+    </LinearLayout>
+</ScrollView>

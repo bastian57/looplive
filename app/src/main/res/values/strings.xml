@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoopLive</string>
+    <string name="guide_text">LANGKAH LIVE:\n\n1. Di LoopLive: pilih video, atur overlay (ticker/harga/QR), tap MODE LIVE.\n\n2. Buka TikTok &gt; + &gt; LIVE &gt; Bagikan layar &gt; mulai live.\n\n3. Kembali ke LoopLive — video sudah loop fullscreen.\n\nTES AUDIO (Audio Path Detector):\n\nA. Putar video sambil bicara. Kalau suara bicara terdengar di live = mic TikTok ikut kecampur.\n\nB. Nyalakan MicLock, bicara lagi. Kalau tinggal suara video yang jernih = SUKSES, arsitektur jalan.\n\nC. Kalau suara video TIDAK terdengar sama sekali = TikTok hanya pakai mic. Fallback: Speaker Bridge — putar video kencang via speaker, mic tetap terbuka.\n\nCATATAN:\n- Aktifkan Jangan Ganggu (DND) setiap live.\n- Tombol TAHAN BICARA: tahan untuk membuka mic sementara menyapa viewer, lepas untuk mengunci lagi.</string>
+</resources>

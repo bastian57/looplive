@@ -128,6 +128,58 @@
             android:text="MicLock: kunci mic saat live (hanya audio video/musik)"
             android:textColor="@color/text" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Anti-Deteksi (Lapis 2+3)"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text" />
+
+        <CheckBox
+            android:id="@+id/cbRandomLoop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Loop point acak (anti-periodisitas)"
+            android:textColor="@color/text" />
+
+        <CheckBox
+            android:id="@+id/cbEngagement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Simulasi engagement (viewer/like/komentar)"
+            android:textColor="@color/text" />
+
+        <CheckBox
+            android:id="@+id/cbLiveData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Overlay data hidup (countdown/stok/sapaan)"
+            android:textColor="@color/text" />
+
+        <CheckBox
+            android:id="@+id/cbShuffle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shuffle playlist + transisi fade"
+            android:textColor="@color/text" />
+
+        <CheckBox
+            android:id="@+id/cbHandheld"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Goyangan handheld + autofocus hunting"
+            android:textColor="@color/text" />
+
+        <CheckBox
+            android:id="@+id/cbAudioAlive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Audio aliveness (pitch/tempo mikro)"
+            android:textColor="@color/text" />
+
         <Button
             android:id="@+id/btnLive"
             android:layout_width="match_parent"
@@ -157,7 +209,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_gravity="center_horizontal"
-            android:text="LoopLive v1.0.0 - by DAFTECH"
+            android:text="LoopLive v1.1.0 - by DAFTECH"
             android:textColor="@color/muted"
             android:textSize="11sp" />
 

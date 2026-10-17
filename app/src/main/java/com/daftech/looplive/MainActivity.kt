@@ -67,6 +67,12 @@ class MainActivity : AppCompatActivity() {
         findViewById<CheckBox>(R.id.cbClock).isChecked = prefs.getBoolean("clock", true)
         findViewById<CheckBox>(R.id.cbDnd).isChecked = prefs.getBoolean("dnd", true)
         findViewById<CheckBox>(R.id.cbMicLock).isChecked = prefs.getBoolean("miclock", true)
+        findViewById<CheckBox>(R.id.cbRandomLoop).isChecked = prefs.getBoolean("randomLoop", true)
+        findViewById<CheckBox>(R.id.cbEngagement).isChecked = prefs.getBoolean("engagement", true)
+        findViewById<CheckBox>(R.id.cbLiveData).isChecked = prefs.getBoolean("liveData", true)
+        findViewById<CheckBox>(R.id.cbShuffle).isChecked = prefs.getBoolean("shuffle", true)
+        findViewById<CheckBox>(R.id.cbHandheld).isChecked = prefs.getBoolean("handheld", true)
+        findViewById<CheckBox>(R.id.cbAudioAlive).isChecked = prefs.getBoolean("audioAlive", true)
 
         findViewById<Button>(R.id.btnPick).setOnClickListener {
             pickVideos.launch(arrayOf("video/*"))
@@ -101,6 +107,12 @@ class MainActivity : AppCompatActivity() {
             .putBoolean("clock", findViewById<CheckBox>(R.id.cbClock).isChecked)
             .putBoolean("dnd", findViewById<CheckBox>(R.id.cbDnd).isChecked)
             .putBoolean("miclock", findViewById<CheckBox>(R.id.cbMicLock).isChecked)
+            .putBoolean("randomLoop", findViewById<CheckBox>(R.id.cbRandomLoop).isChecked)
+            .putBoolean("engagement", findViewById<CheckBox>(R.id.cbEngagement).isChecked)
+            .putBoolean("liveData", findViewById<CheckBox>(R.id.cbLiveData).isChecked)
+            .putBoolean("shuffle", findViewById<CheckBox>(R.id.cbShuffle).isChecked)
+            .putBoolean("handheld", findViewById<CheckBox>(R.id.cbHandheld).isChecked)
+            .putBoolean("audioAlive", findViewById<CheckBox>(R.id.cbAudioAlive).isChecked)
             .apply()
     }
 
@@ -139,6 +151,12 @@ class MainActivity : AppCompatActivity() {
             putExtra("clock", findViewById<CheckBox>(R.id.cbClock).isChecked)
             putExtra("dnd", dnd)
             putExtra("miclock", findViewById<CheckBox>(R.id.cbMicLock).isChecked)
+            putExtra("randomLoop", findViewById<CheckBox>(R.id.cbRandomLoop).isChecked)
+            putExtra("engagement", findViewById<CheckBox>(R.id.cbEngagement).isChecked)
+            putExtra("liveData", findViewById<CheckBox>(R.id.cbLiveData).isChecked)
+            putExtra("shuffle", findViewById<CheckBox>(R.id.cbShuffle).isChecked)
+            putExtra("handheld", findViewById<CheckBox>(R.id.cbHandheld).isChecked)
+            putExtra("audioAlive", findViewById<CheckBox>(R.id.cbAudioAlive).isChecked)
         }
         startActivity(i)
     }

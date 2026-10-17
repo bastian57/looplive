@@ -13,6 +13,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Switch
@@ -29,8 +30,10 @@ import androidx.media3.ui.PlayerView
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.Random
 
 class PlayerActivity : AppCompatActivity() {
 
@@ -41,13 +44,51 @@ class PlayerActivity : AppCompatActivity() {
     private var micLocked = true
     private var dndOn = false
     private val handler = Handler(Looper.getMainLooper())
+    private val rnd = Random()
     private var retryCount = 0
+    private val sessionStart = System.currentTimeMillis()
 
-    private val clockRunnable = object : Runnable {
+    // Anti-deteksi Lapis 2+3
+    private var stealthLoop: StealthLoop? = null
+    private var handheld: HandheldMotion? = null
+    private var audioAlive: AudioAlive? = null
+    private var engagement: EngagementSim? = null
+    private var engagementOn = false
+    private var liveDataOn = false
+    private var randomLoopOn = false
+    private var countdownLeft = 15 * 60
+    private var stock = 20
+
+    // Detik-ticker: jam + durasi live + countdown flash sale
+    private val tickRunnable = object : Runnable {
         override fun run() {
             findViewById<TextView>(R.id.tvClock).text =
                 SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
+            val elapsed = (System.currentTimeMillis() - sessionStart) / 1000
+            val dur = fmtDur(elapsed)
+            if (engagementOn) {
+                engagement?.setDuration(dur)
+            } else if (liveDataOn) {
+                findViewById<TextView>(R.id.tvLiveMeta).text = "🔴 LIVE • $dur"
+            }
+            if (liveDataOn) {
+                countdownLeft--
+                if (countdownLeft < 0) countdownLeft = 15 * 60
+                findViewById<TextView>(R.id.tvCountdown).text =
+                    "⚡ FLASH SALE berakhir ${fmtMs(countdownLeft)}"
+            }
             handler.postDelayed(this, 1000)
+        }
+    }
+
+    private val stockRunnable = object : Runnable {
+        override fun run() {
+            if (liveDataOn) {
+                stock--
+                if (stock < 3) stock = 15 + rnd.nextInt(11)
+                findViewById<TextView>(R.id.tvStock).text = "Sisa stok: $stock"
+                handler.postDelayed(this, (180 + rnd.nextInt(180)) * 1000L)
+            }
         }
     }
 
@@ -75,6 +116,12 @@ class PlayerActivity : AppCompatActivity() {
         val showClock = intent.getBooleanExtra("clock", true)
         dndOn = intent.getBooleanExtra("dnd", false)
         micLocked = intent.getBooleanExtra("miclock", true)
+        randomLoopOn = intent.getBooleanExtra("randomLoop", true)
+        engagementOn = intent.getBooleanExtra("engagement", true)
+        liveDataOn = intent.getBooleanExtra("liveData", true)
+        val shuffleOn = intent.getBooleanExtra("shuffle", true)
+        val handheldOn = intent.getBooleanExtra("handheld", true)
+        val audioAliveOn = intent.getBooleanExtra("audioAlive", true)
 
         // DND: heningkan semua notifikasi selama live
         if (dndOn && notifManager.isNotificationPolicyAccessGranted) {
@@ -91,13 +138,17 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
-        // LoopEngine: ExoPlayer playlist repeat-all
+        // Player + StealthLoop (Lapis 2.1 + 3.1)
         val playerView = findViewById<PlayerView>(R.id.playerView)
         playerView.useController = false
         val items = uris.map { MediaItem.fromUri(it) }
         player = ExoPlayer.Builder(this).build().also { p ->
             p.setMediaItems(items)
-            p.repeatMode = Player.REPEAT_MODE_ALL
+            audioAlive = AudioAlive(p, audioAliveOn)
+            stealthLoop = StealthLoop(p, randomLoopOn, shuffleOn) {
+                if (randomLoopOn) fadeTransition()
+                audioAlive?.onCycle()
+            }
             p.addListener(object : Player.Listener {
                 override fun onPlayerError(error: PlaybackException) {
                     if (retryCount < 5) {
@@ -118,37 +169,68 @@ class PlayerActivity : AppCompatActivity() {
             p.play()
         }
 
-        // Micro-trick: Ken Burns zoom 1.0 -> 1.04 (tak kasat mata, hash frame berubah)
-        val zoom = ValueAnimator.ofFloat(1f, 1.04f).apply {
-            duration = 24000
-            repeatMode = ValueAnimator.REVERSE
-            repeatCount = ValueAnimator.INFINITE
+        // Lapis 3.2: handheld breathing, atau fallback Ken Burns lawas
+        handheld = HandheldMotion(playerView, handheldOn)
+        if (handheldOn) {
+            handheld?.start()
+        } else {
+            ValueAnimator.ofFloat(1f, 1.04f).apply {
+                duration = 24000
+                repeatMode = ValueAnimator.REVERSE
+                repeatCount = ValueAnimator.INFINITE
+                addUpdateListener { a ->
+                    val v = a.animatedValue as Float
+                    playerView.scaleX = v
+                    playerView.scaleY = v
+                }
+                start()
+            }
         }
-        zoom.addUpdateListener { a ->
-            val v = a.animatedValue as Float
-            playerView.scaleX = v
-            playerView.scaleY = v
-        }
-        zoom.start()
 
-        // Micro-trick: brightness jitter halus via overlay
-        val dimView = findViewById<View>(R.id.dimView)
-        ValueAnimator.ofFloat(0f, 0.03f).apply {
-            duration = 9000
-            repeatMode = ValueAnimator.REVERSE
-            repeatCount = ValueAnimator.INFINITE
-            addUpdateListener { a -> dimView.alpha = a.animatedValue as Float }
-            start()
+        // Brightness jitter lawas — hanya bila tanpa fade transisi
+        // (dimView dipakai untuk fade saat randomLoop aktif)
+        if (!randomLoopOn) {
+            val dimView = findViewById<View>(R.id.dimView)
+            ValueAnimator.ofFloat(0f, 0.03f).apply {
+                duration = 9000
+                repeatMode = ValueAnimator.REVERSE
+                repeatCount = ValueAnimator.INFINITE
+                addUpdateListener { a -> dimView.alpha = a.animatedValue as Float }
+                start()
+            }
         }
+
+        // Lapis 2.2: simulasi engagement
+        val liveBar = findViewById<LinearLayout>(R.id.liveBar)
+        liveBar.visibility =
+            if (engagementOn || liveDataOn) View.VISIBLE else View.GONE
+        engagement = EngagementSim(
+            findViewById(R.id.tvLiveMeta),
+            findViewById(R.id.tvJoin),
+            findViewById(R.id.likeLayer),
+            findViewById(R.id.commentLayer),
+            engagementOn
+        )
+        engagement?.start()
+
+        // Lapis 2.3: overlay data hidup
+        findViewById<TextView>(R.id.tvCountdown).visibility =
+            if (liveDataOn) View.VISIBLE else View.GONE
+        findViewById<TextView>(R.id.tvStock).visibility =
+            if (liveDataOn) View.VISIBLE else View.GONE
+        val tvGreet = findViewById<TextView>(R.id.tvGreet)
+        if (liveDataOn) {
+            tvGreet.text = greeting()
+            tvGreet.visibility = View.VISIBLE
+            stock = 15 + rnd.nextInt(11)
+            findViewById<TextView>(R.id.tvStock).text = "Sisa stok: $stock"
+            handler.postDelayed(stockRunnable, (180 + rnd.nextInt(120)) * 1000L)
+        }
+        handler.post(tickRunnable)
 
         // OverlayEngine: jam real-time
         val tvClock = findViewById<TextView>(R.id.tvClock)
-        if (showClock) {
-            tvClock.visibility = View.VISIBLE
-            handler.post(clockRunnable)
-        } else {
-            tvClock.visibility = View.GONE
-        }
+        tvClock.visibility = if (showClock) View.VISIBLE else View.GONE
 
         // OverlayEngine: ticker promo marquee
         val tvTicker = findViewById<TextView>(R.id.tvTicker)
@@ -233,6 +315,36 @@ class PlayerActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnClose).setOnClickListener { finish() }
     }
 
+    /** Transisi fade hitam singkat tiap siklus — menutupi titik potong loop. */
+    private fun fadeTransition() {
+        val dim = findViewById<View>(R.id.dimView)
+        dim.animate().cancel()
+        dim.alpha = 0f
+        dim.animate().alpha(0.85f).setDuration(180).withEndAction {
+            dim.animate().alpha(0f).setDuration(220).start()
+        }.start()
+    }
+
+    private fun fmtDur(s: Long): String {
+        val h = s / 3600
+        val m = (s % 3600) / 60
+        val sec = s % 60
+        return "%02d:%02d:%02d".format(h, m, sec)
+    }
+
+    private fun fmtMs(s: Int): String {
+        return "%02d:%02d".format(s / 60, s % 60)
+    }
+
+    private fun greeting(): String {
+        return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+            in 4..10 -> "Selamat pagi kak! \uD83C\uDF05"
+            in 11..14 -> "Selamat siang kak! ☀️"
+            in 15..17 -> "Selamat sore kak! \uD83C\uDF07"
+            else -> "Selamat malam kak! \uD83C\uDF19"
+        }
+    }
+
     private fun qrBitmap(text: String, size: Int): Bitmap? {
         return try {
             val bits = QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, size, size)
@@ -249,7 +361,10 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        handler.removeCallbacks(clockRunnable)
+        handler.removeCallbacks(tickRunnable)
+        handler.removeCallbacks(stockRunnable)
+        engagement?.stop()
+        handheld?.stop()
         try {
             audioManager.isMicrophoneMute = false
         } catch (e: Exception) {

@@ -22,6 +22,13 @@
         android:background="@android:color/black"
         android:alpha="0" />
 
+    <FrameLayout
+        android:id="@+id/likeLayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false" />
+
     <TextView
         android:id="@+id/tvPrice"
         android:layout_width="wrap_content"
@@ -33,6 +40,19 @@
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvGreet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="72dp"
+        android:background="#AA000000"
+        android:padding="6dp"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
         android:visibility="gone" />
 
     <TextView
@@ -50,6 +70,64 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
+    <LinearLayout
+        android:id="@+id/liveBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvLiveMeta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#AA000000"
+            android:padding="6dp"
+            android:textColor="@android:color/white"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvCountdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="#AA000000"
+            android:padding="6dp"
+            android:textColor="@color/accent2"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvStock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="#CCFE2C55"
+            android:padding="6dp"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvJoin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="150dp"
+        android:background="#AA000000"
+        android:padding="6dp"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
     <ImageView
         android:id="@+id/ivQr"
         android:layout_width="96dp"
@@ -59,6 +137,15 @@
         android:background="@android:color/white"
         android:padding="4dp"
         android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/commentLayer"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="170dp"
+        android:orientation="vertical" />
 
     <TextView
         android:id="@+id/tvTicker"

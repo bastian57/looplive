@@ -138,15 +138,8 @@
             android:textColor="@color/text" />
 
         <CheckBox
-            android:id="@+id/cbRandomLoop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Loop point acak (anti-periodisitas)"
-            android:textColor="@color/text" />
-
-        <CheckBox
             android:id="@+id/cbEngagement"
+            android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Simulasi engagement (viewer/like/komentar)"
@@ -163,7 +156,7 @@
             android:id="@+id/cbShuffle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Shuffle playlist + transisi fade"
+            android:text="Shuffle playlist"
             android:textColor="@color/text" />
 
         <CheckBox

@@ -55,7 +55,6 @@ class PlayerActivity : AppCompatActivity() {
     private var engagement: EngagementSim? = null
     private var engagementOn = false
     private var liveDataOn = false
-    private var randomLoopOn = false
     private var countdownLeft = 15 * 60
     private var stock = 20
 
@@ -116,7 +115,6 @@ class PlayerActivity : AppCompatActivity() {
         val showClock = intent.getBooleanExtra("clock", true)
         dndOn = intent.getBooleanExtra("dnd", false)
         micLocked = intent.getBooleanExtra("miclock", true)
-        randomLoopOn = intent.getBooleanExtra("randomLoop", true)
         engagementOn = intent.getBooleanExtra("engagement", true)
         liveDataOn = intent.getBooleanExtra("liveData", true)
         val shuffleOn = intent.getBooleanExtra("shuffle", true)
@@ -138,15 +136,14 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
-        // Player + StealthLoop (Lapis 2.1 + 3.1)
+        // Player + StealthLoop: repeat seamless native (tanpa seek/fade)
         val playerView = findViewById<PlayerView>(R.id.playerView)
         playerView.useController = false
         val items = uris.map { MediaItem.fromUri(it) }
         player = ExoPlayer.Builder(this).build().also { p ->
             p.setMediaItems(items)
             audioAlive = AudioAlive(p, audioAliveOn)
-            stealthLoop = StealthLoop(p, randomLoopOn, shuffleOn) {
-                if (randomLoopOn) fadeTransition()
+            stealthLoop = StealthLoop(p, shuffleOn) {
                 audioAlive?.onCycle()
             }
             p.addListener(object : Player.Listener {
@@ -187,17 +184,14 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
-        // Brightness jitter lawas — hanya bila tanpa fade transisi
-        // (dimView dipakai untuk fade saat randomLoop aktif)
-        if (!randomLoopOn) {
-            val dimView = findViewById<View>(R.id.dimView)
-            ValueAnimator.ofFloat(0f, 0.03f).apply {
-                duration = 9000
-                repeatMode = ValueAnimator.REVERSE
-                repeatCount = ValueAnimator.INFINITE
-                addUpdateListener { a -> dimView.alpha = a.animatedValue as Float }
-                start()
-            }
+        // Brightness jitter halus — variasi temporal anti-deteksi
+        val dimView = findViewById<View>(R.id.dimView)
+        ValueAnimator.ofFloat(0f, 0.03f).apply {
+            duration = 9000
+            repeatMode = ValueAnimator.REVERSE
+            repeatCount = ValueAnimator.INFINITE
+            addUpdateListener { a -> dimView.alpha = a.animatedValue as Float }
+            start()
         }
 
         // Lapis 2.2: simulasi engagement
@@ -316,16 +310,6 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnClose).setOnClickListener { finish() }
-    }
-
-    /** Transisi fade hitam singkat tiap siklus — menutupi titik potong loop. */
-    private fun fadeTransition() {
-        val dim = findViewById<View>(R.id.dimView)
-        dim.animate().cancel()
-        dim.alpha = 0f
-        dim.animate().alpha(0.85f).setDuration(180).withEndAction {
-            dim.animate().alpha(0f).setDuration(220).start()
-        }.start()
     }
 
     private fun fmtDur(s: Long): String {

@@ -4,90 +4,38 @@ import android.animation.ValueAnimator
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
-import androidx.media3.common.Timeline
 import java.util.Random
 import kotlin.math.sin
 
 /**
- * Lapis 2.1 — Loop point acak: tiap siklus mulai dari item & posisi acak.
- * Menghancurkan periodisitas yang dibaca detektor loop (autokorelasi).
- * Lapis 3.1 — Shuffle: urutan playlist diacak ulang tiap siklus penuh.
+ * Loop seamless native ExoPlayer — tanpa seek manual, tanpa fade.
  *
- * Menggantikan REPEAT_MODE_ALL: repeat dimatikan, transisi antar-item
- * dibajak manual. onCycle dipanggil tiap pergantian (untuk fade + audio).
+ * (Mekanisme lama "loop point acak" DICABUT 2026-10-17: seek manual +
+ * fade ke hitam justru membuat titik loop terlihat jelas — freeze decoder
+ * 100-400ms + kedip hitam 400ms tiap putaran. Repeat native tidak punya
+ * jeda sama sekali.)
+ *
+ * Lapis 3.1 — Shuffle: urutan playlist diacak (ExoPlayer shuffle).
+ * Anti-periodisitas tetap dijaga lapisan lain: grain acak, handheld
+ * motion, brightness jitter, audio drift, overlay live.
+ * onCycle dipanggil tiap pergantian item otomatis (untuk audio drift).
  */
 class StealthLoop(
     private val player: Player,
-    private val randomLoop: Boolean,
     private val shuffle: Boolean,
     private val onCycle: () -> Unit
 ) {
-    private val rnd = Random()
-    private val window = Timeline.Window()
-    private var order: MutableList<Int> = mutableListOf()
-    private var cursor = 0
-
     init {
-        if (randomLoop) {
-            player.repeatMode = Player.REPEAT_MODE_OFF
-            reshuffle()
-        } else {
-            player.repeatMode = Player.REPEAT_MODE_ALL
-            if (shuffle) player.setShuffleModeEnabled(true)
-        }
+        player.repeatMode = Player.REPEAT_MODE_ALL
+        if (shuffle) player.setShuffleModeEnabled(true)
         player.addListener(object : Player.Listener {
             override fun onMediaItemTransition(item: MediaItem?, reason: Int) {
-                if (randomLoop && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
-                    cycle()
-                } else if (!randomLoop) {
-                    onCycle()
-                }
-            }
-
-            override fun onPlaybackStateChanged(state: Int) {
-                if (randomLoop && state == Player.STATE_ENDED) cycle()
+                if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) onCycle()
             }
         })
-    }
-
-    private fun reshuffle() {
-        val n = player.mediaItemCount
-        order = (0 until n).toMutableList()
-        if (shuffle && n > 1) order.shuffle(rnd)
-        cursor = 0
-    }
-
-    private fun randomPos(idx: Int): Long {
-        return try {
-            val tl = player.currentTimeline
-            if (idx < tl.windowCount) {
-                tl.getWindow(idx, window)
-                val dur = window.durationMs
-                if (dur != C.TIME_UNSET && dur > 5000) {
-                    (rnd.nextFloat() * (dur - 3000)).toLong()
-                } else 0L
-            } else 0L
-        } catch (e: Exception) {
-            0L
-        }
-    }
-
-    private fun cycle() {
-        val n = player.mediaItemCount
-        if (n == 0) return
-        if (cursor >= order.size) reshuffle()
-        val idx = order[cursor++]
-        try {
-            player.seekTo(idx, randomPos(idx))
-            player.play()
-        } catch (e: Exception) {
-            // abaikan, coba lagi di siklus berikutnya
-        }
-        onCycle()
     }
 }
 

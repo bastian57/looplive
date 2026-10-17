@@ -222,6 +222,7 @@ class PlayerActivity : AppCompatActivity() {
         if (liveDataOn) {
             tvGreet.text = greeting()
             tvGreet.visibility = View.VISIBLE
+            handler.postDelayed({ tvGreet.visibility = View.GONE }, 6000)
             stock = 15 + rnd.nextInt(11)
             findViewById<TextView>(R.id.tvStock).text = "Sisa stok: $stock"
             handler.postDelayed(stockRunnable, (180 + rnd.nextInt(120)) * 1000L)

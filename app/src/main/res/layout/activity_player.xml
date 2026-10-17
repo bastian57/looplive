@@ -31,92 +31,105 @@
         android:clickable="false"
         android:focusable="false" />
 
-    <TextView
-        android:id="@+id/tvPrice"
-        android:layout_width="wrap_content"
+    <!-- HUD atas: satu baris (harga | info live | jam), tidak tumpuk -->
+    <LinearLayout
+        android:id="@+id/topHud"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|start"
-        android:layout_margin="16dp"
-        android:background="#CCFE2C55"
-        android:padding="8dp"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
+        android:layout_gravity="top"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp">
 
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#CCFE2C55"
+            android:padding="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/liveBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvLiveMeta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#AA000000"
+                android:ellipsize="end"
+                android:padding="6dp"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCountdown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="#AA000000"
+                android:padding="6dp"
+                android:singleLine="true"
+                android:textColor="@color/accent2"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvStock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="#CCFE2C55"
+                android:padding="6dp"
+                android:textColor="@android:color/white"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shadowColor="@android:color/black"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- Sapaan: muncul sebentar lalu hilang otomatis -->
     <TextView
         android:id="@+id/tvGreet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|start"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="84dp"
         android:background="#AA000000"
         android:padding="6dp"
         android:textColor="@android:color/white"
         android:textSize="12sp"
         android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/tvClock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_margin="16dp"
-        android:shadowColor="@android:color/black"
-        android:shadowDx="2"
-        android:shadowDy="2"
-        android:shadowRadius="4"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/liveBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="10dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/tvLiveMeta"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#AA000000"
-            android:padding="6dp"
-            android:textColor="@android:color/white"
-            android:textSize="13sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvCountdown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:background="#AA000000"
-            android:padding="6dp"
-            android:textColor="@color/accent2"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tvStock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:background="#CCFE2C55"
-            android:padding="6dp"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-    </LinearLayout>
 
     <TextView
         android:id="@+id/tvJoin"
